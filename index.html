@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Srinithi D</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #0f0f12;
+            --bg-card: #18181f;
+            --text: #e4e4e7;
+            --text-muted: #a1a1aa;
+            --accent: #f59e0b;
+            --accent-hover: #fbbf24;
+            --border: #27272a;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Syne', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+        a { color: inherit; text-decoration: none; transition: color 0.2s; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+        
+        /* Navbar */
+        .navbar { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; background: rgba(15,15,18,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); transition: padding 0.3s; }
+        .navbar.scrolled { padding: 0.5rem 2rem; }
+        .logo { font-weight: 700; font-size: 1.25rem; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a:hover { color: var(--accent); }
+        .menu-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 5px; }
+        .menu-toggle span { width: 24px; height: 2px; background: var(--text); transition: 0.3s; }
+        .menu-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+        .menu-toggle.active span:nth-child(2) { opacity: 0; }
+        .menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+        
+        /* Hero */
+        .hero { min-height: 100vh; display: flex; align-items: center; padding: 6rem 2rem 4rem; gap: 4rem; flex-wrap: wrap; }
+        .hero-content { flex: 1; min-width: 280px; }
+        .hero-greeting { color: var(--accent); font-size: 1rem; margin-bottom: 0.5rem; font-weight: 500; }
+        .hero-name { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+        .hero-role { font-size: 1.25rem; color: var(--text-muted); margin-bottom: 1rem; }
+        .hero-desc { color: var(--text-muted); margin-bottom: 2rem; max-width: 500px; }
+        .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .btn { display: inline-block; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; font-family: inherit; transition: all 0.2s; border: 2px solid transparent; }
+        .btn-primary { background: var(--accent); color: var(--bg); }
+        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); }
+        .btn-secondary { border-color: var(--border); color: var(--text); }
+        .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-large { padding: 1rem 2rem; font-size: 1.1rem; }
+        .hero-visual { flex: 1; min-width: 280px; }
+        .code-block { font-family: 'JetBrains Mono', monospace; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; font-size: 0.9rem; line-height: 2; }
+        .keyword { color: #c084fc; }
+        .string { color: #34d399; }
+        .scroll-indicator { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; color: var(--text-muted); font-size: 0.85rem; }
+        .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--text-muted), transparent); animation: scrollPulse 2s infinite; }
+        @keyframes scrollPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        .hero-stats { display: flex; gap: 2rem; margin-top: 2rem; flex-wrap: wrap; }
+        .hero-stat { text-align: left; }
+        .hero-stat .num { font-size: 1.5rem; font-weight: 700; color: var(--accent); display: block; }
+        .hero-stat .label { font-size: 0.85rem; color: var(--text-muted); }
+        
+        /* Sections */
+        section { padding: 5rem 2rem; }
+        .section-header { margin-bottom: 3rem; }
+        .section-tag { color: var(--accent); font-size: 0.9rem; font-weight: 500; display: block; margin-bottom: 0.5rem; }
+        .section-header h2 { font-size: 2rem; font-weight: 700; }
+        
+        /* About */
+        .about { background: var(--bg-card); }
+        .about-content { display: grid; grid-template-columns: auto 1fr; gap: 3rem; align-items: center; max-width: 1100px; margin: 0 auto; }
+        .about-text p { margin-bottom: 1rem; color: var(--text-muted); max-width: 600px; }
+        .about-text .btn { margin-top: 1rem; }
+        .profile-photo { width: 200px; height: 200px; border-radius: 50%; object-fit: cover; border: 4px solid var(--border); box-shadow: 0 8px 32px rgba(245, 158, 11, 0.2); transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; }
+        .profile-photo:hover { transform: scale(1.03); border-color: var(--accent); box-shadow: 0 12px 40px rgba(245, 158, 11, 0.25); }
+        
+        /* Skills */
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; max-width: 1100px; margin: 0 auto; }
+        .skill-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; transition: border-color 0.2s, transform 0.2s; }
+        .skill-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+        .skill-icon { font-size: 1.5rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem; }
+        .skill-card h3 { margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .skill-card p { color: var(--text-muted); font-size: 0.9rem; }
+        
+        /* Projects */
+        .projects { background: var(--bg-card); }
+        .projects-grid { display: grid; gap: 2rem; max-width: 1100px; margin: 0 auto; }
+        .project-card { display: grid; grid-template-columns: 200px 1fr; gap: 2rem; align-items: center; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; transition: border-color 0.2s; }
+        .project-card:hover { border-color: var(--accent); }
+        .project-placeholder { background: var(--border); border-radius: 8px; height: 120px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-weight: 600; }
+        .project-info h3 { margin-bottom: 0.5rem; font-size: 1.2rem; }
+        .project-info p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem; }
+        .project-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .project-tags span { background: var(--bg-card); padding: 0.25rem 0.6rem; border-radius: 6px; font-size: 0.8rem; color: var(--text-muted); border: 1px solid var(--border); }
+        
+        /* Education */
+        .education { background: var(--bg); }
+        .timeline { max-width: 700px; margin: 0 auto; }
+        .timeline-item { display: flex; gap: 2rem; margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+        .timeline-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .timeline-year { flex-shrink: 0; width: 100px; font-weight: 600; color: var(--accent); }
+        .timeline-content h3 { margin-bottom: 0.25rem; font-size: 1.1rem; }
+        .timeline-content .sub { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .timeline-content p { color: var(--text-muted); font-size: 0.95rem; }
+        
+        /* Experience */
+        .experience { background: var(--bg-card); }
+        .exp-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; transition: border-color 0.2s; }
+        .exp-card:hover { border-color: var(--accent); }
+        .exp-card:last-child { margin-bottom: 0; }
+        .exp-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+        .exp-title { font-weight: 600; font-size: 1.1rem; }
+        .exp-date { color: var(--accent); font-size: 0.9rem; }
+        .exp-desc { color: var(--text-muted); font-size: 0.95rem; }
+        
+        /* Achievements */
+        .achievements { background: var(--bg); }
+        .achievements-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; max-width: 1100px; margin: 0 auto; }
+        .achievement-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; transition: border-color 0.2s, transform 0.2s; }
+        .achievement-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .achievement-card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+        .achievement-card h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+        .achievement-card p { color: var(--text-muted); font-size: 0.9rem; }
+        
+        /* Certifications */
+        .certifications { background: var(--bg-card); }
+        .cert-list { max-width: 700px; margin: 0 auto; }
+        .cert-item { display: flex; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+        .cert-item:last-child { border-bottom: none; }
+        .cert-badge { width: 48px; height: 48px; background: var(--accent); color: var(--bg); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem; flex-shrink: 0; }
+        .cert-item h3 { font-size: 1rem; }
+        .cert-item p { color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem; }
+        
+        /* Contact */
+        .contact-content { text-align: center; max-width: 600px; margin: 0 auto; }
+        .contact-content p { color: var(--text-muted); margin-bottom: 1.5rem; }
+        .contact-content .btn-large { margin-bottom: 0.5rem; }
+        .contact-phone { display: block; color: var(--text-muted); margin-bottom: 1.5rem; }
+        .social-links { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
+        .social-links a:hover { color: var(--accent); }
+        
+        /* Footer */
+        .footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.9rem; }
+        .footer .copyright { margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.8; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .menu-toggle { display: flex; }
+            .nav-links { position: fixed; top: 60px; right: -100%; width: 100%; height: calc(100vh - 60px); background: var(--bg); flex-direction: column; padding: 2rem; gap: 1.5rem; transition: right 0.3s; border-top: 1px solid var(--border); overflow-y: auto; }
+            .nav-links.active { right: 0; }
+            .about-content { grid-template-columns: 1fr; }
+            .project-card { grid-template-columns: 1fr; }
+            .timeline-item { flex-direction: column; gap: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <a href="#" class="logo">Portfolio</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#achievements">Achievements</a></li>
+            <li><a href="#certifications">Certifications</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <p class="hero-greeting">Hi, I'm</p>
+            <h1 class="hero-name">Srinithi D</h1>
+            <p class="hero-role">Full Stack Developer & Problem Solver</p>
+            <p class="hero-desc">B.Tech CSE student | 750+ CodeChef | 300+ LeetCode | Building innovative solutions with HTML, CSS, JavaScript & MERN stack.</p>
+            <div class="hero-buttons">
+                <a href="#projects" class="btn btn-primary">View My Work</a>
+                <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat"><span class="num">750+</span><span class="label">CodeChef Solved</span></div>
+                <div class="hero-stat"><span class="num">300+</span><span class="label">LeetCode Solved</span></div>
+                <div class="hero-stat"><span class="num">8</span><span class="label">LeetCode Badges</span></div>
+                <div class="hero-stat"><span class="num">3</span><span class="label">Projects</span></div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="code-block">
+                <span class="code-line"><span class="keyword">const</span> developer = {</span>
+                <span class="code-line">  passion: <span class="string">"creating"</span>,</span>
+                <span class="code-line">  stack: [<span class="string">"Python"</span>, <span class="string">"Java"</span>, <span class="string">"MERN"</span>],</span>
+                <span class="code-line">  status: <span class="string">"ready"</span></span>
+                <span class="code-line">};</span>
+            </div>
+        </div>
+        <div class="scroll-indicator"><span>Scroll</span><div class="scroll-line"></div></div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="section-header"><span class="section-tag">01. About</span><h2>About Me</h2></div>
+        <div class="about-content">
+            <div class="about-image">
+                <img src="srinithi.jpeg" alt="Srinithi D" class="profile-photo">
+            </div>
+            <div class="about-text">
+                <p><strong>Career Objective:</strong> To leverage my skills in computer science and problem-solving to develop innovative solutions and contribute to organizational success while continuously learning and growing in the tech industry.</p>
+                <p>B.Tech Computer Science student at KIT-Kalaignarkarunanidhi Institute of Technology (CGPA: 8.34). Completed full-stack development training at NEW TECHNOLOGIES and inplant training at ETS Academy. Based in Coimbatore, India.</p>
+                <p>Regular participant in CodeChef and LeetCode — solving 750+ problems on CodeChef and 300+ on LeetCode. Paper Presentation Head Co-ordinator at UDHAYAM (Inter-College Function).</p>
+                <a href="#contact" class="btn btn-primary">Let's Talk</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="education" class="education">
+        <div class="section-header"><span class="section-tag">02. Education</span><h2>Academic Background</h2></div>
+        <div class="timeline">
+            <div class="timeline-item">
+                <span class="timeline-year">2022–2026</span>
+                <div class="timeline-content">
+                    <h3>B.Tech — Computer Science and Business Systems</h3>
+                    <p class="sub">KIT-Kalaignarkarunanidhi Institute of Technology</p>
+                    <p>CGPA: 8.34 (upto 6th semester)</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-year">2022</span>
+                <div class="timeline-content">
+                    <h3>HSC (Higher Secondary)</h3>
+                    <p class="sub">Kadri Mills Higher Secondary School</p>
+                    <p>Percentage: 81.3%</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-year">2020</span>
+                <div class="timeline-content">
+                    <h3>SSLC</h3>
+                    <p class="sub">Kadri Mills Higher Secondary School</p>
+                    <p>Percentage: 86.8%</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="experience" class="experience">
+        <div class="section-header"><span class="section-tag">03. Experience</span><h2>Professional Experience</h2></div>
+        <div class="projects-grid" style="max-width: 700px; margin: 0 auto;">
+            <div class="exp-card">
+                <div class="exp-header">
+                    <span class="exp-title">Full-Stack Development — Internship</span>
+                    <span class="exp-date">NEW TECHNOLOGIES, Coimbatore</span>
+                </div>
+                <p class="exp-desc">Completed full-stack development training, gaining hands-on experience in building dynamic web applications with modern technologies.</p>
+            </div>
+            <div class="exp-card">
+                <div class="exp-header">
+                    <span class="exp-title">Inplant Training — Networking</span>
+                    <span class="exp-date">ETS Academy (Feb 2024)</span>
+                </div>
+                <p class="exp-desc">Gained practical experience in networking concepts, network configuration, and hands-on skills with various networking tools and protocols.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="skills">
+        <div class="section-header"><span class="section-tag">04. Skills</span><h2>What I Work With</h2></div>
+        <div class="skills-grid">
+            <div class="skill-card"><div class="skill-icon">Python</div><h3>Programming</h3><p>Python, Java, C — DSA (Intermediate), OOP fundamentals</p></div>
+            <div class="skill-card"><div class="skill-icon">Web</div><h3>Web Development</h3><p>HTML, CSS, JavaScript — Full-stack with MERN</p></div>
+            <div class="skill-card"><div class="skill-icon">SQL</div><h3>Database</h3><p>Structured Query Language, data modeling</p></div>
+            <div class="skill-card"><div class="skill-icon">Soft</div><h3>Soft Skills</h3><p>Communication, Team Collaboration, Leadership, Problem Solving</p></div>
+        </div>
+    </section>
+
+    <section id="projects" class="projects">
+        <div class="section-header"><span class="section-tag">05. Projects</span><h2>Things I've Built</h2></div>
+        <div class="projects-grid">
+            <article class="project-card">
+                <div class="project-image"><div class="project-placeholder">MERN</div></div>
+                <div class="project-info">
+                    <h3>School Management System</h3>
+                    <p>MERN-based system with role-based dashboards, real-time communication, student management, attendance & performance tracking.</p>
+                    <div class="project-tags"><span>MongoDB</span><span>Express</span><span>React</span><span>Node.js</span></div>
+                </div>
+            </article>
+            <article class="project-card">
+                <div class="project-image"><div class="project-placeholder">AI</div></div>
+                <div class="project-info">
+                    <h3>AI Chatbot for Mental Health</h3>
+                    <p>Provides instant, confidential emotional guidance, stress management techniques & mental health awareness for rural students via mobile platforms.</p>
+                    <div class="project-tags"><span>AI</span><span>Mobile</span><span>Python</span></div>
+                </div>
+            </article>
+            <article class="project-card">
+                <div class="project-image"><div class="project-placeholder">Web</div></div>
+                <div class="project-info">
+                    <h3>Password Generator</h3>
+                    <p>Sleek password generator with modern layout — secure random passwords with uppercase, lowercase, numbers, symbols & copy-to-clipboard.</p>
+                    <div class="project-tags"><span>HTML</span><span>CSS</span><span>JavaScript</span></div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section id="achievements" class="achievements">
+        <div class="section-header"><span class="section-tag">06. Achievements</span><h2>Highlights</h2></div>
+        <div class="achievements-grid">
+            <div class="achievement-card">
+                <div class="icon">🏆</div>
+                <h3>CODEATHON — 2nd Prize</h3>
+                <p>Second prize in CODEATHON (coding hackathon) at Sri Ramakrishna Engineering College, Coimbatore — Cash award ₹1,000.</p>
+            </div>
+            <div class="achievement-card">
+                <div class="icon">📊</div>
+                <h3>CodeChef — 750+ Problems</h3>
+                <p>Solved 750+ problems on CodeChef with 2 certifications. Regular participant in competitive programming.</p>
+            </div>
+            <div class="achievement-card">
+                <div class="icon">🎯</div>
+                <h3>LeetCode — 300+ Problems</h3>
+                <p>Solved 300+ problems with 8 badges earned. Consistently building DSA and problem-solving skills.</p>
+            </div>
+            <div class="achievement-card">
+                <div class="icon">⚡</div>
+                <h3>Hackathon — Top 50</h3>
+                <p>Participated in multiple 24-hour and 12-hour hackathons held at college — secured top 50 position.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="certifications" class="certifications">
+        <div class="section-header"><span class="section-tag">07. Certifications</span><h2>Credentials</h2></div>
+        <div class="cert-list">
+            <div class="cert-item">
+                <div class="cert-badge">Py</div>
+                <div>
+                    <h3>Python Foundation Certification</h3>
+                    <p>Infosys Springboard</p>
+                </div>
+            </div>
+            <div class="cert-item">
+                <div class="cert-badge">Web</div>
+                <div>
+                    <h3>TechA Web Designing Certification</h3>
+                    <p>Infosys Springboard</p>
+                </div>
+            </div>
+            <div class="cert-item">
+                <div class="cert-badge">AG</div>
+                <div>
+                    <h3>Agile Scrum Certification</h3>
+                    <p>Infosys Springboard</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="section-header"><span class="section-tag">08. Contact</span><h2>Get In Touch</h2></div>
+        <div class="contact-content">
+            <p>Open to internships and full-time opportunities. Let's connect!</p>
+            <a href="mailto:srinidhandapani07@gmail.com" class="btn btn-primary btn-large">srinidhandapani07@gmail.com</a>
+            <a href="tel:+917200755611" class="contact-phone">+91 7200755611</a>
+            <div class="social-links">
+                <a href="https://github.com/SrinithiDhandapani" target="_blank" rel="noopener" aria-label="GitHub">GitHub</a>
+                <a href="https://www.linkedin.com/in/srinithi-d-b222a9265/" target="_blank" rel="noopener" aria-label="LinkedIn">LinkedIn</a>
+                <a href="https://www.codechef.com/users/srinithi_07" target="_blank" rel="noopener" aria-label="CodeChef">CodeChef</a>
+                <a href="https://leetcode.com/u/Srinithi_07/" target="_blank" rel="noopener" aria-label="LeetCode">LeetCode</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>Built with HTML, CSS & JavaScript</p>
+        <p class="copyright">© 2025 Srinithi D. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const navbar = document.getElementById('navbar');
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+        });
+
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                navLinks.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+    </script>
+</body>
+</html>
